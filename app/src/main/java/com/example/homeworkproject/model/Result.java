@@ -6,11 +6,27 @@ public class Result {
     @SerializedName("Name")
     private String countryName;
 
-    public Result(String name){
-        this.countryName = name;
+    @SerializedName("Code")
+    private String countryCode;
+
+    @SerializedName("ID")
+    private int countryId;
+
+    public Result(String countryName, String countryCode, int countryId) {
+        this.countryName = countryName;
+        this.countryCode = countryCode;
+        this.countryId = countryId;
     }
 
-    public String getCountryName(){
+    public String getCountryName() {
         return countryName;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public int getCountryId() {
+        return countryId;
     }
 }

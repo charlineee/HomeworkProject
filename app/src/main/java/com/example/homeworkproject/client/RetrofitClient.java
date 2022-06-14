@@ -8,24 +8,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static RetrofitClient instance = null;
-    private Api myApi;
 
-    private RetrofitClient(){
-        Retrofit retrofit = new Retrofit.Builder()
+    private static Retrofit.Builder retrofitBuilder =
+            new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        myApi = retrofit.create(Api.class);
-    }
+                .addConverterFactory(GsonConverterFactory.create());
 
-    public static synchronized RetrofitClient getInstance(){
-        if(instance == null){
-            instance = new RetrofitClient();
-        }
-        return instance;
-    }
+    private static Retrofit retrofit = retrofitBuilder.build();
 
-    public Api getMyApi(){
+    private static Api myApi = retrofit.create(Api.class);
+
+    public static Api getMyApi(){
         return myApi;
     }
 }
