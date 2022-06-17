@@ -1,8 +1,9 @@
 package com.example.homeworkproject.client;
 
-import com.example.homeworkproject.model.ProvinceResult;
-import com.example.homeworkproject.model.Result;
+import com.example.homeworkproject.model.Province;
+import com.example.homeworkproject.model.Country;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -13,8 +14,8 @@ public interface Api {
 
     String BASE_URL = "https://connect.mindbodyonline.com/rest/worldregions/";
     @GET("country")
-    Call<List<Result>> getCountry();
+    Call<ArrayList<Country>> getCountry();
 
     @GET("country/{id}/province")
-    Call<List<ProvinceResult>> getProvince(@Path("id") String id);
+    Call<ArrayList<Province>> getProvince(@Path("id") String id);
 }

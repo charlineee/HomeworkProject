@@ -2,11 +2,11 @@ package com.example.homeworkproject.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ProvinceResult {
+public class Province {
     @SerializedName("Name")
     private final String provinceName;
 
-    public ProvinceResult(String provinceName) {
+    public Province(String provinceName) {
         this.provinceName = provinceName;
     }
 

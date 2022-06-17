@@ -1,22 +1,20 @@
 package com.example.homeworkproject.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class Country {
     @SerializedName("Name")
+    @Expose
     private String countryName;
 
     @SerializedName("Code")
+    @Expose
     private String countryCode;
 
     @SerializedName("ID")
-    private int countryId;
-
-    public Result(String countryName, String countryCode, int countryId) {
-        this.countryName = countryName;
-        this.countryCode = countryCode;
-        this.countryId = countryId;
-    }
+    @Expose
+    private Integer countryId;
 
     public String getCountryName() {
         return countryName;
