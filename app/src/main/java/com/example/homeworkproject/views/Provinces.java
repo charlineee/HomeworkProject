@@ -12,31 +12,45 @@ import android.widget.TextView;
 import com.example.homeworkproject.R;
 
 public class Provinces extends Fragment {
-TextView province;
-private String myProvince;
+
+    private TextView province;
+    private static final String ARG_PARAM1 = "param1";
+
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+
 
     public Provinces() {
+        // Required empty public constructor
+    }
+
+    public static Provinces newInstance(String param1) {
+        Provinces fragment = new Provinces();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
 
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_provinces, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_provinces, container, false);
 
-        province = v.findViewById(R.id.province);
+        TextView province = view.findViewById(R.id.province);
+        province.setText(mParam1);
 
-        Bundle data = getArguments();
-        if (data != null){
-            myProvince = data.getString("key");
-        }
-        province.setText(myProvince);
-
-        return v;
+        return view;
     }
 }

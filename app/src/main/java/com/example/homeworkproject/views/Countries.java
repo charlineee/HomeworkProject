@@ -1,17 +1,17 @@
 package com.example.homeworkproject.views;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.LocationAdapter;
@@ -26,11 +26,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class Countries extends Fragment {
+public class Countries extends Fragment implements LocationAdapter.ItemClickListener {
 RecyclerView recyclerView;
 ProgressBar progressBar;
 ArrayList<Country> countryArrayList;
 LocationAdapter locationAdapter;
+
     public Countries() {
         // Required empty public constructor
     }
@@ -56,6 +57,7 @@ LocationAdapter locationAdapter;
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_countries, container, false);
         initView(view);
+
         return view;
     }
 
@@ -63,8 +65,10 @@ LocationAdapter locationAdapter;
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
         countryArrayList = new ArrayList<>();
+        locationAdapter = new LocationAdapter(countryArrayList, this);
         getAllCountries();
     }
+
     private void getAllCountries(){
         Api apiRequest = RetrofitClient.getMyApi();
         Call<ArrayList<Country>> call= apiRequest.getCountry();
@@ -74,11 +78,10 @@ LocationAdapter locationAdapter;
             public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    countryArrayList = response.body();
+                    countryArrayList.addAll(response.body()) ;
 
-                    for (Country country : countryArrayList) {
+                        for (Country country : countryArrayList) {
 
-                        locationAdapter = new LocationAdapter(countryArrayList, getActivity());
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setAdapter(locationAdapter);
@@ -90,5 +93,15 @@ LocationAdapter locationAdapter;
                 Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(Country countryArrayList) {
+        Log.d("TAG", "onItemClick: " + countryArrayList.getCountryId());
+        Fragment fragment = Provinces.newInstance(String.valueOf(countryArrayList.getCountryId()));
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.frameContainer, fragment, "provinces");
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
