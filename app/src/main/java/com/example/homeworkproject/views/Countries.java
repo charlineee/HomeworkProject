@@ -18,6 +18,7 @@ import com.example.homeworkproject.adapter.LocationAdapter;
 import com.example.homeworkproject.client.Api;
 import com.example.homeworkproject.client.RetrofitClient;
 import com.example.homeworkproject.model.Country;
+import com.example.homeworkproject.model.Province;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ RecyclerView recyclerView;
 ProgressBar progressBar;
 ArrayList<Country> countryArrayList;
 LocationAdapter locationAdapter;
+    String content = "";
 
     public Countries() {
         // Required empty public constructor
@@ -98,10 +100,37 @@ LocationAdapter locationAdapter;
     @Override
     public void onItemClick(Country countryArrayList) {
         Log.d("TAG", "onItemClick: " + countryArrayList.getCountryId());
-        Fragment fragment = Provinces.newInstance(String.valueOf(countryArrayList.getCountryId()));
+        String value = String.valueOf(countryArrayList.getCountryId());
+
+        Api apiRequest = RetrofitClient.getMyApi();
+        Call<ArrayList<Province>> call = apiRequest.getProvince(value);
+        call.enqueue(new Callback<ArrayList<Province>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
+                if (response.isSuccessful()){
+
+                }
+                ArrayList<Province> provinces = response.body();
+                for (Province province : provinces) {
+                    content += province.getProvinceName() + "\n";
+
+                }
+                //send content to fragment
+                Fragment fragment = Provinces.newInstance(content);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frameContainer, fragment, "provinces");
+                transaction.commit();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
+
+            }
+        });
+        /*Fragment fragment = Provinces.newInstance(String.valueOf(countryArrayList.getCountryId()));
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.frameContainer, fragment, "provinces");
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commit();*/
     }
 }

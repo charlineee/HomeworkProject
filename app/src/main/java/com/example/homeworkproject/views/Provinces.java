@@ -48,7 +48,7 @@ public class Provinces extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_provinces, container, false);
 
-        TextView province = view.findViewById(R.id.province);
+        TextView province = view.findViewById(R.id.provinceNames);
         province.setText(mParam1);
 
         return view;
