@@ -1,5 +1,6 @@
 package com.example.homeworkproject.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.countryText.setText(countryDataArrayList.get(position).getCountryName());
         holder.countryText.setOnClickListener(new View.OnClickListener() {
             @Override
