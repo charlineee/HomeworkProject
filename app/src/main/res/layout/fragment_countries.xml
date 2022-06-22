@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".views.Countries">
 
+<!--    Gopika Comments - You can add a tool bar to display the screen title and back navigation -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

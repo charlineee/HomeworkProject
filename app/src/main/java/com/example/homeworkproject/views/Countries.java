@@ -81,6 +81,7 @@ LocationAdapter locationAdapter;
                     progressBar.setVisibility(View.GONE);
                     countryArrayList.addAll(response.body()) ;
 
+                    //Gopika Comments - No need for for loop here
                         for (Country country : countryArrayList) {
 
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -91,6 +92,7 @@ LocationAdapter locationAdapter;
             }
             @Override
             public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
+                //Gopika Comments - set the progress bar visibility = GONE
                 Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
             }
         });
@@ -107,9 +109,10 @@ LocationAdapter locationAdapter;
             @Override
             public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
                 if (response.isSuccessful()){
-
+                    //Gopika Comments - Please move the below code to this if block
                 }
                 ArrayList<Province> provinces = response.body();
+                ////Gopika Comments - You can use the same recycler view to display the list
                 for (Province province : provinces) {
                     content += province.getProvinceName() + "\n";
 
@@ -124,7 +127,7 @@ LocationAdapter locationAdapter;
 
             @Override
             public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
-
+           //Gopika Comments - Please add a error toast
             }
         });
 

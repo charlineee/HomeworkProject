@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".views.Provinces">
 
-
+    <!--    Gopika Comments - You can add a tool bar to display the screen title and back navigation -->
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/provinceView"

@@ -6,11 +6,11 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:elevation="8dp">
-
+    <!--    Gopika Comments - you can use a regular linear layout no need for table view you can use android:orientation="horizontol"-->
 <TableRow
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+    <!--    Gopika Comments - You could move the dp values to dimens.xml file-->
     <ImageView
         android:id="@+id/flag"
         android:layout_width="92dp"
