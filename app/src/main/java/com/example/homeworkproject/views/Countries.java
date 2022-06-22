@@ -40,9 +40,8 @@ LocationAdapter locationAdapter;
 
 
     public static Countries newInstance() {
-        Countries fragment = new Countries();
 
-        return fragment;
+        return new Countries();
     }
 
     @Override
