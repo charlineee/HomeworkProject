@@ -67,7 +67,7 @@ LocationAdapter locationAdapter;
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
         countryArrayList = new ArrayList<>();
-        locationAdapter = new LocationAdapter(countryArrayList, this);
+        locationAdapter = new LocationAdapter(countryArrayList,getActivity(),this);
         getAllCountries();
     }
 
@@ -119,6 +119,7 @@ LocationAdapter locationAdapter;
                 Fragment fragment = Provinces.newInstance(content);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.frameContainer, fragment, "provinces");
+                transaction.addToBackStack("countries");
                 transaction.commit();
             }
 
@@ -127,10 +128,12 @@ LocationAdapter locationAdapter;
 
             }
         });
-        /*Fragment fragment = Provinces.newInstance(String.valueOf(countryArrayList.getCountryId()));
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.frameContainer, fragment, "provinces");
-        transaction.addToBackStack(null);
-        transaction.commit();*/
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        content = "";
     }
 }

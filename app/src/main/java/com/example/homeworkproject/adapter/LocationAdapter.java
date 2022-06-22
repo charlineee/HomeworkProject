@@ -5,28 +5,30 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.model.Country;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
     private ArrayList<Country> countryDataArrayList;
-    private HashMap<String, Integer> map = new HashMap<>();
-    private Integer id = 0;
     private ItemClickListener clickListener;
+    Context context;
 
-    public LocationAdapter(ArrayList<Country> countryArrayList,ItemClickListener clickListener) {
-        this.countryDataArrayList = countryArrayList; //from main
-
+    public LocationAdapter(ArrayList<Country> countryArrayList, Context context, ItemClickListener clickListener) {
+        this.countryDataArrayList = countryArrayList; //from main call
+        this.context = context;
         this.clickListener = clickListener;
     }
 
@@ -41,6 +43,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.countryText.setText(countryDataArrayList.get(position).getCountryName());
+        //load flag images
+        Glide.with(context)
+                .load("https://raw.githubusercontent.com/hampusborgos/country-flags/main/png250px/" + countryDataArrayList.get(position).getCountryCode().toLowerCase(Locale.ROOT)+".png")//url
+                .circleCrop()
+                .into(holder.flags);
+        //click listener for item selection
         holder.countryText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,12 +65,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView countryText;
+        private ImageView flags;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             countryText = itemView.findViewById(R.id.country);
-
+            flags = itemView.findViewById(R.id.flag);
         }
 
     }

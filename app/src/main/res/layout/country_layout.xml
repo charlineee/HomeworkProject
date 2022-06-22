@@ -7,16 +7,15 @@
     android:layout_margin="8dp"
     android:elevation="8dp">
 
-<LinearLayout
+<TableRow
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/flag"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_margin="5dp"/>
+        android:layout_width="92dp"
+        android:layout_height="49dp"
+        android:layout_margin="5dp" />
     <TextView
         android:id="@+id/country"
         android:layout_width="match_parent"
@@ -27,8 +26,6 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"/>
-
-</LinearLayout>
-
+</TableRow>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
