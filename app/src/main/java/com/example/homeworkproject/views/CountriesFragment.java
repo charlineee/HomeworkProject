@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,38 +19,35 @@ import com.example.homeworkproject.adapter.LocationAdapter;
 import com.example.homeworkproject.client.Api;
 import com.example.homeworkproject.client.RetrofitClient;
 import com.example.homeworkproject.model.Country;
-import com.example.homeworkproject.model.Province;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class Countries extends Fragment implements LocationAdapter.ItemClickListener {
+public class CountriesFragment extends Fragment implements LocationAdapter.ItemClickListener {
 RecyclerView recyclerView;
 ProgressBar progressBar;
 ArrayList<Country> countryArrayList;
 LocationAdapter locationAdapter;
-    String content = "";
 
-    public Countries() {
+    public CountriesFragment() {
         // Required empty public constructor
     }
 
 
-    public static Countries newInstance() {
+    public static CountriesFragment newInstance() {
 
-        return new Countries();
+        return new CountriesFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -58,6 +56,10 @@ LocationAdapter locationAdapter;
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_countries, container, false);
         initView(view);
+
+        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Countries");
+        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayShowHomeEnabled(false);
 
         return view;
     }
@@ -81,61 +83,31 @@ LocationAdapter locationAdapter;
                     progressBar.setVisibility(View.GONE);
                     countryArrayList.addAll(response.body()) ;
 
-                    //Gopika Comments - No need for for loop here
-                        for (Country country : countryArrayList) {
-
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setAdapter(locationAdapter);
-                    }
                 }
             }
             @Override
             public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
-                //Gopika Comments - set the progress bar visibility = GONE
-                Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     @Override
     public void onItemClick(Country countryArrayList) {
         Log.d("TAG", "onItemClick: " + countryArrayList.getCountryId());
         String value = String.valueOf(countryArrayList.getCountryId());
 
-        Api apiRequest = RetrofitClient.getMyApi();
-        Call<ArrayList<Province>> call = apiRequest.getProvince(value);
-        call.enqueue(new Callback<ArrayList<Province>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
-                if (response.isSuccessful()){
-                    //Gopika Comments - Please move the below code to this if block
-                }
-                ArrayList<Province> provinces = response.body();
-                ////Gopika Comments - You can use the same recycler view to display the list
-                for (Province province : provinces) {
-                    content += province.getProvinceName() + "\n";
-
-                }
-                //send content to fragment
-                Fragment fragment = Provinces.newInstance(content);
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameContainer, fragment, "provinces");
-                transaction.addToBackStack("countries");
-                transaction.commit();
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
-           //Gopika Comments - Please add a error toast
-            }
-        });
+        Fragment fragment = ProvincesFragment.newInstance(value);
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameContainer, fragment, "provinces");
+        transaction.addToBackStack("countries");
+        transaction.commit();
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        content = "";
-    }
 }

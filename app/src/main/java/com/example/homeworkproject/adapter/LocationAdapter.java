@@ -49,12 +49,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
                 .circleCrop()
                 .into(holder.flags);
         //click listener for item selection
-        holder.countryText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickListener.onItemClick(countryDataArrayList.get(position));
-            }
-        });
+        holder.countryText.setOnClickListener(view -> clickListener.onItemClick(countryDataArrayList.get(position)));
     }
 
     @Override
