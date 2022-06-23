@@ -56,7 +56,7 @@ LocationAdapter locationAdapter;
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_countries, container, false);
         initView(view);
-
+        //set title on toolbar
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Countries");
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayShowHomeEnabled(false);
@@ -91,15 +91,41 @@ LocationAdapter locationAdapter;
             @Override
             public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                //snackbar with retry button
+                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view), t.getMessage() + ", try again?", Snackbar.LENGTH_LONG);
+                snackbar.setAction("YES", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //click yes to clone previous call
+                        progressBar.setVisibility(View.VISIBLE);
+                        call.clone().enqueue(new Callback<ArrayList<Country>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
+                                if (response.isSuccessful()) {
+                                    progressBar.setVisibility(View.GONE);
+                                    countryArrayList.addAll(response.body()) ;
+
+                                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    recyclerView.setAdapter(locationAdapter);
+                                }
+                            }
+                            //on failure display toast with error
+                            @Override
+                            public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+                snackbar.show();
             }
         });
     }
 
-
     @Override
     public void onItemClick(Country countryArrayList) {
-        Log.d("TAG", "onItemClick: " + countryArrayList.getCountryId());
         String value = String.valueOf(countryArrayList.getCountryId());
 
         Fragment fragment = ProvincesFragment.newInstance(value);

@@ -17,6 +17,7 @@ import com.example.homeworkproject.adapter.ProvinceAdapter;
 import com.example.homeworkproject.client.Api;
 import com.example.homeworkproject.client.RetrofitClient;
 import com.example.homeworkproject.model.Province;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -56,10 +57,10 @@ public class ProvincesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //set title and enable back button on toolbar
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Provinces");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-
 
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
         initView(view);
@@ -86,7 +87,11 @@ public class ProvincesFragment extends Fragment {
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     provinceArrayList.addAll(response.body());
+                    if (provinceArrayList.size() == 0) {
+                        //if no provinces, load view and add toast message
+                        Toast.makeText(getActivity(), "No provinces here", Toast.LENGTH_LONG).show();
 
+                    }
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(provinceAdapter);
@@ -96,7 +101,35 @@ public class ProvincesFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                //snackbar with retry button
+                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.provinces_view), t.getMessage() + ", try again?", Snackbar.LENGTH_LONG);
+                snackbar.setAction("YES", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //click yes to clone previous call
+                        progressBar.setVisibility(View.VISIBLE);
+                        call.clone().enqueue(new Callback<ArrayList<Province>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
+                                if (response.isSuccessful()) {
+                                    progressBar.setVisibility(View.GONE);
+                                    provinceArrayList.addAll(response.body()) ;
+
+                                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    recyclerView.setAdapter(provinceAdapter);
+                                }
+                            }
+                            //on failure display toast with error
+                            @Override
+                            public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+                snackbar.show();
             }
         });
     }

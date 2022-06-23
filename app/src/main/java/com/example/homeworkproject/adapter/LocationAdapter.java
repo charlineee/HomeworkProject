@@ -16,7 +16,6 @@ import com.example.homeworkproject.R;
 import com.example.homeworkproject.model.Country;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 
