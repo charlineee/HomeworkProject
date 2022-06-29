@@ -6,27 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.LocationAdapter;
-import com.example.homeworkproject.client.Api;
-import com.example.homeworkproject.client.RetrofitClient;
 import com.example.homeworkproject.model.Country;
+import com.example.homeworkproject.viewmodels.CountryViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class CountriesFragment extends Fragment implements LocationAdapter.ItemClickListener {
@@ -73,53 +69,29 @@ LocationAdapter locationAdapter;
     }
 
     private void getAllCountries(){
-        Api apiRequest = RetrofitClient.getMyApi();
-        Call<ArrayList<Country>> call= apiRequest.getCountry();
-        call.enqueue(new Callback<ArrayList<Country>>(){
-
+        CountryViewModel viewModel = new ViewModelProvider(requireActivity()).get(CountryViewModel.class);
+        viewModel.getLiveCountryData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Country>>() {
             @Override
-            public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
-                if (response.isSuccessful()) {
+            public void onChanged(ArrayList<Country> countryArrayList) {
+                if (countryArrayList != null){
                     progressBar.setVisibility(View.GONE);
-                    countryArrayList.addAll(response.body()) ;
+                    Log.d("TAG", "onChanged: " + countryArrayList.size());
 
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                        recyclerView.setLayoutManager(layoutManager);
-                        recyclerView.setAdapter(locationAdapter);
+                    //set layout/adapter for recyclerview
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(locationAdapter);
                 }
-            }
-            @Override
-            public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                //snackbar with retry button
-                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view), t.getMessage() + ", try again?", Snackbar.LENGTH_LONG);
-                snackbar.setAction("YES", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //click yes to clone previous call
-                        progressBar.setVisibility(View.VISIBLE);
-                        call.clone().enqueue(new Callback<ArrayList<Country>>() {
-                            @Override
-                            public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
-                                if (response.isSuccessful()) {
-                                    progressBar.setVisibility(View.GONE);
-                                    countryArrayList.addAll(response.body()) ;
+                else{
+                    progressBar.setVisibility(View.GONE);
+                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view),   ", try again?", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("YES", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                                    recyclerView.setLayoutManager(layoutManager);
-                                    recyclerView.setAdapter(locationAdapter);
-                                }
-                            }
-                            //on failure display toast with error
-                            @Override
-                            public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
-                snackbar.show();
+                        }
+                    });
+                }
             }
         });
     }
