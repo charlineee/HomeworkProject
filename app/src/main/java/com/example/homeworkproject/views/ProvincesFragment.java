@@ -90,15 +90,16 @@ public class ProvincesFragment extends Fragment {
         viewModel.getLiveProvinceData(value).observe(requireActivity(), new Observer<ArrayList<Province>>() {
             @Override
             public void onChanged(ArrayList<Province> provinces) {
-                if (provinces!= null){
+                if (provinces!= null && provinces.size() > 0){
                     progressBar.setVisibility(View.GONE);
                     provinceArrayList.addAll(provinces);
-                    Log.d("TAG", "onChanged: " + provinceArrayList.size());
+                    Log.d("TAG", "onChanged: " + provinces.size());
                     //set layout/adapter for recyclerview
 
                 } else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "No provinces here", Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.frameContainer), "No provinces here", Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 }
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 recyclerView.setLayoutManager(layoutManager);

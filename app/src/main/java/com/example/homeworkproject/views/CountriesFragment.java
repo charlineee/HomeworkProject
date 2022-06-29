@@ -86,13 +86,9 @@ LocationAdapter locationAdapter;
             }
             else{
                 progressBar.setVisibility(View.GONE);
-                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view),   ", try again?", Snackbar.LENGTH_LONG);
-                snackbar.setAction("YES", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
+                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.frameContainer), "unable to load, try again?", Snackbar.LENGTH_LONG);
+                snackbar.setAction("YES", view -> viewModel.getLiveCountryData());
+                snackbar.show();
             }
         });
     }
