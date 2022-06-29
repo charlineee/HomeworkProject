@@ -37,6 +37,7 @@ public class ProvincesFragment extends Fragment {
     ProvinceAdapter provinceAdapter;
     private String mParam1;
 
+
     public ProvincesFragment() {
         // Required empty public constructor
     }
@@ -56,6 +57,7 @@ public class ProvincesFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
     }
 
     @Override
@@ -73,26 +75,34 @@ public class ProvincesFragment extends Fragment {
     }
 
     private void initView(View view) {
+
+        provinceArrayList = new ArrayList<>();
+        getAllProvinces(mParam1);
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
-        provinceArrayList = new ArrayList<>();
         provinceAdapter = new ProvinceAdapter(provinceArrayList);
-        getAllProvinces(mParam1);
+
     }
 
     private void getAllProvinces(String value) {
+        Log.d("TAG", "getAllProvinces: " + value);
         ProvinceViewModel viewModel = new ViewModelProvider(requireActivity()).get(ProvinceViewModel.class);
-        viewModel.getLiveProvinceData().observe(requireActivity(), new Observer<ArrayList<Province>>() {
+        viewModel.getLiveProvinceData(value).observe(requireActivity(), new Observer<ArrayList<Province>>() {
             @Override
-            public void onChanged(ArrayList<Province> provinceArrayList) {
-                if (provinceArrayList!= null){
+            public void onChanged(ArrayList<Province> provinces) {
+                if (provinces!= null){
                     progressBar.setVisibility(View.GONE);
-
+                    provinceArrayList.addAll(provinces);
+                    Log.d("TAG", "onChanged: " + provinceArrayList.size());
                     //set layout/adapter for recyclerview
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(provinceAdapter);
+
+                } else{
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "No provinces here", Toast.LENGTH_LONG).show();
                 }
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(provinceAdapter);
             }
         });
     }

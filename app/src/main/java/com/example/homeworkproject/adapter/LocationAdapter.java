@@ -2,6 +2,7 @@ package com.example.homeworkproject.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.country_layout, parent, false);
-
+        Log.d("TAG", "onCreateViewHolder: ");
         return new ViewHolder(view);
     }
 
@@ -53,6 +54,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if (countryDataArrayList == null){
+            return 0;
+        }
         return countryDataArrayList.size();
     }
 

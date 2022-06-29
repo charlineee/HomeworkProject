@@ -31,7 +31,7 @@ public class Repository {
             public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
                 if (response.isSuccessful()){
                     countryLiveData.setValue(response.body());
-                    Log.d("TAG", "onResponse: " + response.body().size());
+
                 }
             }
 
@@ -50,6 +50,7 @@ public class Repository {
             public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
                 if (response.isSuccessful()){
                     provinceLiveData.setValue(response.body());
+                    Log.d("TAG", "onResponse: " + response.body().size());
                 }
             }
 

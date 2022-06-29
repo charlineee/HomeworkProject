@@ -11,14 +11,12 @@ import java.util.ArrayList;
 
 public class ProvinceViewModel extends ViewModel {
     Repository repository;
-    String id;
 
     public ProvinceViewModel(){
         repository = new Repository();
-        this.id = id;
     }
 
-    public LiveData<ArrayList<Province>> getLiveProvinceData(){
+    public LiveData<ArrayList<Province>> getLiveProvinceData(String id){
         return repository.getProvince(id);
     }
 }

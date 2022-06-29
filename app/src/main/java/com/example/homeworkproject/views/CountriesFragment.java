@@ -44,6 +44,7 @@ LocationAdapter locationAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -51,7 +52,9 @@ LocationAdapter locationAdapter;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_countries, container, false);
+
         initView(view);
+
         //set title on toolbar
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Countries");
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
@@ -61,37 +64,35 @@ LocationAdapter locationAdapter;
     }
 
     private void initView(View view) {
+
+        countryArrayList = new ArrayList<>();
+        getAllCountries();
+        Log.d("TAG", "initView: ");
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
-        countryArrayList = new ArrayList<>();
         locationAdapter = new LocationAdapter(countryArrayList,getActivity(),this);
-        getAllCountries();
     }
 
-    private void getAllCountries(){
+    public void getAllCountries(){
         CountryViewModel viewModel = new ViewModelProvider(requireActivity()).get(CountryViewModel.class);
-        viewModel.getLiveCountryData().observe(getViewLifecycleOwner(), new Observer<ArrayList<Country>>() {
-            @Override
-            public void onChanged(ArrayList<Country> countryArrayList) {
-                if (countryArrayList != null){
-                    progressBar.setVisibility(View.GONE);
-                    Log.d("TAG", "onChanged: " + countryArrayList.size());
+        viewModel.getLiveCountryData().observe(getViewLifecycleOwner(), countries -> {
+            if (countries!= null){
+                progressBar.setVisibility(View.GONE);
+                countryArrayList.addAll(countries);
+                //set layout/adapter for recyclerview
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(locationAdapter);
+            }
+            else{
+                progressBar.setVisibility(View.GONE);
+                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view),   ", try again?", Snackbar.LENGTH_LONG);
+                snackbar.setAction("YES", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                    //set layout/adapter for recyclerview
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(locationAdapter);
-                }
-                else{
-                    progressBar.setVisibility(View.GONE);
-                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.countries_view),   ", try again?", Snackbar.LENGTH_LONG);
-                    snackbar.setAction("YES", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
     }
