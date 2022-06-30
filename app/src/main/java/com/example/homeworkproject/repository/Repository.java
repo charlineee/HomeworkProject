@@ -20,6 +20,9 @@ import retrofit2.Retrofit;
 
 public class Repository {
     Api apiRequest = RetrofitClient.getMyApi();
+
+    //TODO: Move LiveData to ViewModel
+    //TODO: Repositories are not lifecycle aware -> https://developer.android.com/topic/libraries/architecture/livedata#java
     final MutableLiveData<ArrayList<Country>> countryLiveData = new MutableLiveData<>();
     final MutableLiveData<ArrayList<Province>> provinceLiveData = new MutableLiveData<>();
 
@@ -29,6 +32,7 @@ public class Repository {
         call.enqueue(new Callback<ArrayList<Country>>() {
             @Override
             public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
+                //TODO: Instead send the exact response back to the getCountries caller
                 if (response.isSuccessful()){
                     countryLiveData.setValue(response.body());
 

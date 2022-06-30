@@ -65,7 +65,10 @@ LocationAdapter locationAdapter;
 
     private void initView(View view) {
 
+        //TODO: Let the viewModel hold onto this data versus the fragment
         countryArrayList = new ArrayList<>();
+
+        ///TODO: Look to initiate your models before making ui changes / api calls
         getAllCountries();
         Log.d("TAG", "initView: ");
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -76,13 +79,16 @@ LocationAdapter locationAdapter;
     public void getAllCountries(){
         CountryViewModel viewModel = new ViewModelProvider(requireActivity()).get(CountryViewModel.class);
         viewModel.getLiveCountryData().observe(getViewLifecycleOwner(), countries -> {
+            //TODO: Move progressBar.setvisibility out of if/else. Repeated code below.
             if (countries!= null){
                 progressBar.setVisibility(View.GONE);
                 countryArrayList.addAll(countries);
                 //set layout/adapter for recyclerview
+                //TODO: This should only be needed once in initView()
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(locationAdapter);
+                //TODO: Notify adapter of new data received referencing viewModel
             }
             else{
                 progressBar.setVisibility(View.GONE);
