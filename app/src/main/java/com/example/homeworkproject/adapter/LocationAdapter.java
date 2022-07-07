@@ -22,14 +22,18 @@ import java.util.Locale;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
-    private ArrayList<Country> countryDataArrayList;
-    private ItemClickListener clickListener;
+    public ArrayList<Country> countryDataArrayList;
+    private final ItemClickListener clickListener;
     Context context;
 
     public LocationAdapter(ArrayList<Country> countryArrayList, Context context, ItemClickListener clickListener) {
         this.countryDataArrayList = countryArrayList; //from main call
         this.context = context;
         this.clickListener = clickListener;
+    }
+
+    public void addList(ArrayList<Country> countryList){
+        this.countryDataArrayList = countryList;
     }
 
     @NonNull
@@ -61,8 +65,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView countryText;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView countryText;
         private ImageView flags;
 
         public ViewHolder(@NonNull View itemView) {
@@ -74,7 +78,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     }
     public interface ItemClickListener {
-        public void onItemClick(Country countryDataArrayList);
+        void onItemClick(Country countryDataArrayList);
     }
 
 }

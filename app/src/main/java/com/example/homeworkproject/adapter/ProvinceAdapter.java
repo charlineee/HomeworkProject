@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
+import com.example.homeworkproject.model.Country;
 import com.example.homeworkproject.model.Province;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 
 
@@ -22,9 +24,13 @@ public class ProvinceAdapter extends RecyclerView.Adapter<ProvinceAdapter.ViewHo
     private ArrayList<Province> provinceDataArrayList;
 
 
-    public ProvinceAdapter(ArrayList<Province> provinceArrayList) {
-        this.provinceDataArrayList = provinceArrayList; //from main call
+    public ProvinceAdapter() {
+        this.provinceDataArrayList = provinceDataArrayList; //from main call
 
+    }
+
+    public void addList(ArrayList<Province> provinceList){
+        this.provinceDataArrayList = provinceList;
     }
 
     @NonNull
@@ -43,6 +49,9 @@ public class ProvinceAdapter extends RecyclerView.Adapter<ProvinceAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if (provinceDataArrayList == null){
+            return 0;
+        }
         return provinceDataArrayList.size();
     }
 

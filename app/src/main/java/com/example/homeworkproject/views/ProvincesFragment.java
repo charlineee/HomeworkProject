@@ -1,42 +1,33 @@
 package com.example.homeworkproject.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.ProvinceAdapter;
-import com.example.homeworkproject.client.Api;
-import com.example.homeworkproject.client.RetrofitClient;
 import com.example.homeworkproject.model.Province;
-import com.example.homeworkproject.viewmodels.ProvinceViewModel;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.homeworkproject.viewmodels.LocationViewModel;
 
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
+    LocationViewModel viewModel;
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    ArrayList<Province> provinceArrayList;
     ProvinceAdapter provinceAdapter;
     private String mParam1;
 
+    ArrayList<Province> provinceArrayList;
 
     public ProvincesFragment() {
         // Required empty public constructor
@@ -75,36 +66,26 @@ public class ProvincesFragment extends Fragment {
     }
 
     private void initView(View view) {
-
-        provinceArrayList = new ArrayList<>();
-        getAllProvinces(mParam1);
         recyclerView = view.findViewById(R.id.recyclerView);
         progressBar = view.findViewById(R.id.progressBar);
-        provinceAdapter = new ProvinceAdapter(provinceArrayList);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        provinceAdapter = new ProvinceAdapter();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(provinceAdapter);
+        provinceArrayList = new ArrayList<>();
+
+        getAllProvinces(mParam1);
     }
 
-    private void getAllProvinces(String value) {
-        Log.d("TAG", "getAllProvinces: " + value);
-        ProvinceViewModel viewModel = new ViewModelProvider(requireActivity()).get(ProvinceViewModel.class);
-        viewModel.getLiveProvinceData(value).observe(requireActivity(), new Observer<ArrayList<Province>>() {
-            @Override
-            public void onChanged(ArrayList<Province> provinces) {
-                if (provinces!= null && provinces.size() > 0){
-                    progressBar.setVisibility(View.GONE);
-                    provinceArrayList.addAll(provinces);
-                    Log.d("TAG", "onChanged: " + provinces.size());
-                    //set layout/adapter for recyclerview
-
-                } else{
-                    progressBar.setVisibility(View.GONE);
-                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.frameContainer), "No provinces here", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                }
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(provinceAdapter);
-            }
+    public void getAllProvinces(String value) {
+        viewModel.getLiveProvinceData(value);
+        viewModel.provinceData.observe(requireActivity(), provinceArrayList -> {
+            progressBar.setVisibility(View.GONE);
+            provinceAdapter.addList(provinceArrayList);
+            provinceAdapter.notifyItemRangeChanged(0, viewModel.provinceData.getValue().size());
         });
+
     }
 }
