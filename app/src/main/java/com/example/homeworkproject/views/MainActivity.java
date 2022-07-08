@@ -21,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = CountriesFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameContainer, fragment, "countries");
+        transaction.add(R.id.frameContainer, fragment, "countries");
         transaction.commit();
+
 
     }
 
