@@ -1,5 +1,9 @@
 package com.example.homeworkproject.views;
 
+import static com.example.homeworkproject.model.ApiState.Status.ERROR;
+import static com.example.homeworkproject.model.ApiState.Status.LOADING;
+import static com.example.homeworkproject.model.ApiState.Status.SUCCESS;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,10 +82,22 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
 
     public void getAllCountries() {
         viewModel.getLiveCountryData();
-        viewModel.countryData.observe(requireActivity(), countryArrayList -> {
+        //TODO: retrieve errordata.data
+        viewModel.errorData.observe(requireActivity(), country -> {
             progressBar.setVisibility(View.GONE);
-            locationAdapter.addList(countryArrayList);
-            locationAdapter.notifyItemRangeChanged(0, viewModel.countryData.getValue().size());
+            switch(country.status){
+                case SUCCESS:
+                    locationAdapter.addList(country.data);
+                    locationAdapter.notifyItemRangeChanged(0, (country.data).size());
+                    break;
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case ERROR:
+                    //load view containing error
+                    break;
+            }
+
         });
 
     }

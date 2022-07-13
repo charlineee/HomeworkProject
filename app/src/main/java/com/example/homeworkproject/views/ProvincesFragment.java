@@ -82,10 +82,14 @@ public class ProvincesFragment extends Fragment {
     public void getAllProvinces(String value) {
         viewModel.getLiveProvinceData(value);
         viewModel.provinceData.observe(requireActivity(), provinceArrayList -> {
+
             progressBar.setVisibility(View.GONE);
             provinceAdapter.addList(provinceArrayList);
             provinceAdapter.notifyItemRangeChanged(0, viewModel.provinceData.getValue().size());
-        });
 
+        });
+        viewModel.errorData.observe(requireActivity(), errors -> {
+            //if error data not null, display error message
+        });
     }
 }
