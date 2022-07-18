@@ -24,8 +24,6 @@ import java.util.ArrayList;
 public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private LocationViewModel viewModel;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
     private ProvinceAdapter provinceAdapter;
     private String mParam1;
     private FragmentProvincesBinding binding;
@@ -69,12 +67,12 @@ public class ProvincesFragment extends Fragment {
     }
 
     private void initView(View view) {
-        recyclerView = view.findViewById(R.id.recyclerView);
+
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         provinceAdapter = new ProvinceAdapter();
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(provinceAdapter);
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
 
         getAllProvinces(mParam1);
@@ -87,8 +85,6 @@ public class ProvincesFragment extends Fragment {
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
 
-            binding.progressBar.setVisibility(View.GONE);
-
             switch(provinces.status){
                 case SUCCESS:
                     provinceAdapter.addList(provinces.data);
@@ -98,7 +94,7 @@ public class ProvincesFragment extends Fragment {
                     }
                     break;
                 case LOADING:
-                    progressBar.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case ERROR:
                     binding.provinceText.setText(R.string.error);
@@ -109,4 +105,6 @@ public class ProvincesFragment extends Fragment {
         });
 
     }
+
+
 }

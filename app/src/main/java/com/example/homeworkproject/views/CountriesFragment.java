@@ -31,9 +31,7 @@ import java.util.Objects;
 
 
 public class CountriesFragment extends Fragment implements LocationAdapter.ItemClickListener {
-    public static String value;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
+
     public static ArrayList<Country> countryArrayList;
     private LocationAdapter locationAdapter;
     public LocationViewModel viewModel;
@@ -58,8 +56,7 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //View view = inflater.inflate(R.layout.fragment_countries, container, false);
+
         binding = FragmentCountriesBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         initView(view);
@@ -74,15 +71,11 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
 
     private void initView(View view) {
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        progressBar = view.findViewById(R.id.progressBar);
-
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         locationAdapter = new LocationAdapter(countryArrayList, getActivity(), this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(locationAdapter);
-        countryArrayList = new ArrayList<>();
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(locationAdapter);
 
         getAllCountries();
     }
@@ -93,17 +86,17 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         binding.retryButton.setOnClickListener(view -> viewModel.getLiveCountryData());
 
         viewModel.countryData.observe(requireActivity(), country -> {
-            progressBar.setVisibility(View.GONE);
+
             switch(country.status){
                 case SUCCESS:
                     locationAdapter.addList(country.data);
                     locationAdapter.notifyItemRangeChanged(0, (country.data).size());
                     break;
                 case LOADING:
-                    progressBar.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case ERROR:
-                    binding.errorText.setText(R.string.error);
+                    binding.errorText.setVisibility(View.VISIBLE);
                     binding.retryButton.setVisibility(View.VISIBLE);
                     break;
             }
