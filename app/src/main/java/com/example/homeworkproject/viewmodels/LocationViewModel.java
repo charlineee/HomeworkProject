@@ -21,7 +21,7 @@ public class LocationViewModel extends ViewModel {
 
     public MutableLiveData<ApiState<ArrayList<Province>>> provinceData;
     public MutableLiveData<ApiState<ArrayList<Country>>> countryData;
-
+    public String currentVal;
 
     public LocationViewModel(){
         this.repository = new Repository();
@@ -34,7 +34,9 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void getLiveProvinceData(String value){
+        currentVal = value;
         provinceData = repository.getProvince(value);
+
     }
 
 
