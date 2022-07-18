@@ -54,7 +54,6 @@ public class Repository {
             @Override
             public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
                 if (response.isSuccessful()){
-                    Log.d(TAG, "onResponse: Sending api call");
                     ArrayList<Province> province = response.body();
                     provinceLiveData.setValue(ApiState.success(province));
                 }

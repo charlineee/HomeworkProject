@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.ProvinceAdapter;
@@ -20,6 +18,7 @@ import com.example.homeworkproject.model.Province;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -53,18 +52,21 @@ public class ProvincesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //set title and enable back button on toolbar
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Provinces");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.p_title);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setDisplayShowHomeEnabled(true);
+
         binding = FragmentProvincesBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         initView(view);
 
         return view;
     }
+
+
 
     private void initView(View view) {
 
@@ -79,9 +81,16 @@ public class ProvincesFragment extends Fragment {
     }
 
     public void getAllProvinces(String value) {
-        binding.retryButton.setOnClickListener(view -> viewModel.getLiveProvinceData(value));
 
-        viewModel.getLiveProvinceData(value);
+        if (viewModel.currentVal == null || !viewModel.currentVal.equals(value)){
+            viewModel.getLiveProvinceData(value);
+        }
+
+        binding.retryButton.setOnClickListener(view -> {
+            binding.retryButton.setVisibility(View.GONE);
+            binding.provinceText.setVisibility(View.GONE);
+            viewModel.getLiveProvinceData(value);
+        });
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
             binding.progressBar.setVisibility(View.GONE);
