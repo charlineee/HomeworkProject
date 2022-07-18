@@ -84,8 +84,9 @@ public class ProvincesFragment extends Fragment {
         viewModel.getLiveProvinceData(value);
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
-
+            binding.progressBar.setVisibility(View.GONE);
             switch(provinces.status){
+
                 case SUCCESS:
                     provinceAdapter.addList(provinces.data);
                     provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());

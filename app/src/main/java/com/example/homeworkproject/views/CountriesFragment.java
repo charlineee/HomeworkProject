@@ -86,7 +86,7 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         binding.retryButton.setOnClickListener(view -> viewModel.getLiveCountryData());
 
         viewModel.countryData.observe(requireActivity(), country -> {
-
+            binding.progressBar.setVisibility(View.GONE);
             switch(country.status){
                 case SUCCESS:
                     locationAdapter.addList(country.data);
