@@ -19,7 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.LocationAdapter;
+import com.example.homeworkproject.adapter.ProvinceAdapter;
+import com.example.homeworkproject.databinding.FragmentCountriesBinding;
+import com.example.homeworkproject.databinding.FragmentProvincesBinding;
 import com.example.homeworkproject.model.Country;
+import com.example.homeworkproject.model.Province;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
 import java.util.ArrayList;
@@ -27,11 +31,13 @@ import java.util.Objects;
 
 
 public class CountriesFragment extends Fragment implements LocationAdapter.ItemClickListener {
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
+    public static String value;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     public static ArrayList<Country> countryArrayList;
-    LocationAdapter locationAdapter;
+    private LocationAdapter locationAdapter;
     public LocationViewModel viewModel;
+    private FragmentCountriesBinding binding;
 
     public CountriesFragment() {
         // Required empty public constructor
@@ -53,8 +59,9 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_countries, container, false);
-
+        //View view = inflater.inflate(R.layout.fragment_countries, container, false);
+        binding = FragmentCountriesBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         initView(view);
 
         //set title on toolbar
@@ -82,8 +89,10 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
 
     public void getAllCountries() {
         viewModel.getLiveCountryData();
-        //TODO: retrieve errordata.data
-        viewModel.errorData.observe(requireActivity(), country -> {
+
+        binding.retryButton.setOnClickListener(view -> viewModel.getLiveCountryData());
+
+        viewModel.countryData.observe(requireActivity(), country -> {
             progressBar.setVisibility(View.GONE);
             switch(country.status){
                 case SUCCESS:
@@ -94,7 +103,8 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
                     progressBar.setVisibility(View.VISIBLE);
                     break;
                 case ERROR:
-                    //load view containing error
+                    binding.errorText.setText(R.string.error);
+                    binding.retryButton.setVisibility(View.VISIBLE);
                     break;
             }
 

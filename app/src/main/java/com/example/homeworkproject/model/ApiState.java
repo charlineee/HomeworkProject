@@ -14,22 +14,14 @@ public class ApiState<T> {
     public ApiState(Status status, T data, String message) {
         ApiState.status = status;
         this.data = data;
-       // this.errorCode = errorCode;
+
         this.message = message;
     }
 
-   /* @SerializedName("ErrorCode")
-    @Expose
-    private static int errorCode;*/
 
     @SerializedName("Message")
     @Expose
     private final String message;
-
-
-    public String getMessage() {
-        return message;
-    }
 
     public static <T> ApiState<T> success(@NonNull T data){
         return new ApiState<>(Status.SUCCESS, data, null);
