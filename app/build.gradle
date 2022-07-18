@@ -5,10 +5,12 @@ plugins {
 android {
     compileSdk 32
 
+    viewBinding {
+        enabled = true
+    }
     dataBinding {
         enabled = true
     }
-
     defaultConfig {
         applicationId "com.example.homeworkproject"
         minSdk 21

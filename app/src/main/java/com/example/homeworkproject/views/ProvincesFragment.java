@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.ProvinceAdapter;
+import com.example.homeworkproject.databinding.FragmentProvincesBinding;
 import com.example.homeworkproject.model.Province;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
@@ -21,13 +23,12 @@ import java.util.ArrayList;
 
 public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
-    LocationViewModel viewModel;
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
-    ProvinceAdapter provinceAdapter;
+    private LocationViewModel viewModel;
+    private ProvinceAdapter provinceAdapter;
     private String mParam1;
-
+    private FragmentProvincesBinding binding;
     ArrayList<Province> provinceArrayList;
+
 
     public ProvincesFragment() {
         // Required empty public constructor
@@ -58,38 +59,53 @@ public class ProvincesFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Provinces");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        View view = inflater.inflate(R.layout.fragment_countries, container, false);
+        binding = FragmentProvincesBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
         initView(view);
 
         return view;
     }
 
     private void initView(View view) {
-        recyclerView = view.findViewById(R.id.recyclerView);
-        progressBar = view.findViewById(R.id.progressBar);
 
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         provinceAdapter = new ProvinceAdapter();
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(provinceAdapter);
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
 
         getAllProvinces(mParam1);
     }
 
     public void getAllProvinces(String value) {
+        binding.retryButton.setOnClickListener(view -> viewModel.getLiveProvinceData(value));
+
         viewModel.getLiveProvinceData(value);
-        viewModel.provinceData.observe(requireActivity(), provinceArrayList -> {
 
-            progressBar.setVisibility(View.GONE);
-            provinceAdapter.addList(provinceArrayList);
-            provinceAdapter.notifyItemRangeChanged(0, viewModel.provinceData.getValue().size());
+        viewModel.provinceData.observe(requireActivity(), provinces -> {
+            binding.progressBar.setVisibility(View.GONE);
+            switch(provinces.status){
+
+                case SUCCESS:
+                    provinceAdapter.addList(provinces.data);
+                    provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());
+                    if (provinces.data.size() < 1) {
+                        binding.provinceText.setText(R.string.provinceNone);
+                    }
+                    break;
+                case LOADING:
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case ERROR:
+                    binding.provinceText.setText(R.string.error);
+                    binding.retryButton.setVisibility(View.VISIBLE);
+                    break;
+            }
 
         });
-        viewModel.errorData.observe(requireActivity(), errors -> {
-            //if error data not null, display error message
-        });
+
     }
+
+
 }

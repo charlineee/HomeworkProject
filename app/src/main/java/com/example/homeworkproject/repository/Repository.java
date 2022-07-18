@@ -1,5 +1,7 @@
 package com.example.homeworkproject.repository;
 
+import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -44,21 +46,23 @@ public class Repository {
         return countryLiveData;
     }
 
-    public MutableLiveData<ArrayList<Province>> getProvince(String value) {
+    public MutableLiveData<ApiState<ArrayList<Province>>> getProvince(String value) {
 
-        final MutableLiveData<ArrayList<Province>> provinceLiveData = new MutableLiveData<>();
+        final MutableLiveData<ApiState<ArrayList<Province>>> provinceLiveData = new MutableLiveData<>();
         Call<ArrayList<Province>> call = apiRequest.getProvince(value);
         call.enqueue(new Callback<ArrayList<Province>>() {
             @Override
             public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
                 if (response.isSuccessful()){
-                    provinceLiveData.setValue(response.body());
+                    Log.d(TAG, "onResponse: Sending api call");
+                    ArrayList<Province> province = response.body();
+                    provinceLiveData.setValue(ApiState.success(province));
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
-                Log.d("TAG", "onFailure: " + t.getMessage());
+                provinceLiveData.setValue(ApiState.error(t.getMessage(), t.getMessage()));
             }
         });
         return provinceLiveData;

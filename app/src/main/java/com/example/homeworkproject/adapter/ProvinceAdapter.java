@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class ProvinceAdapter extends RecyclerView.Adapter<ProvinceAdapter.ViewHolder> {
 
+
     private ArrayList<Province> provinceDataArrayList;
 
 
