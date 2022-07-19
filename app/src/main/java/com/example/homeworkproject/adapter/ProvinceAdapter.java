@@ -1,21 +1,17 @@
 package com.example.homeworkproject.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homeworkproject.R;
-import com.example.homeworkproject.model.Country;
 import com.example.homeworkproject.model.Province;
 
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 
 
@@ -26,13 +22,14 @@ public class ProvinceAdapter extends RecyclerView.Adapter<ProvinceAdapter.ViewHo
 
 
     public ProvinceAdapter() {
-        this.provinceDataArrayList = provinceDataArrayList; //from main call
+        this.provinceDataArrayList = provinceDataArrayList;
 
     }
 
     public void addList(ArrayList<Province> provinceList){
         this.provinceDataArrayList = provinceList;
     }
+
 
     @NonNull
     @Override
