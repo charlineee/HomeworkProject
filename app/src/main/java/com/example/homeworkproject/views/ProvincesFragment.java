@@ -61,14 +61,14 @@ public class ProvincesFragment extends Fragment {
 
         binding = FragmentProvincesBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        initView(view);
+        initView();
 
         return view;
     }
 
 
 
-    private void initView(View view) {
+    private void initView() {
 
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -76,6 +76,12 @@ public class ProvincesFragment extends Fragment {
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
+
+        binding.retryButton.setOnClickListener(view -> {
+            binding.retryButton.setVisibility(View.GONE);
+            binding.provinceText.setVisibility(View.GONE);
+            viewModel.getLiveProvinceData(mParam1);
+        });
 
         getAllProvinces(mParam1);
     }
@@ -86,17 +92,12 @@ public class ProvincesFragment extends Fragment {
             viewModel.getLiveProvinceData(value);
         }
 
-        binding.retryButton.setOnClickListener(view -> {
-            binding.retryButton.setVisibility(View.GONE);
-            binding.provinceText.setVisibility(View.GONE);
-            viewModel.getLiveProvinceData(value);
-        });
-
         viewModel.provinceData.observe(requireActivity(), provinces -> {
-            binding.progressBar.setVisibility(View.GONE);
+
             switch(provinces.status){
 
                 case SUCCESS:
+                    binding.progressBar.setVisibility(View.GONE);
                     provinceAdapter.addList(provinces.data);
                     provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());
                     if (provinces.data.size() < 1) {
@@ -107,6 +108,7 @@ public class ProvincesFragment extends Fragment {
                     binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case ERROR:
+                    binding.progressBar.setVisibility(View.GONE);
                     binding.provinceText.setText(R.string.error);
                     binding.retryButton.setVisibility(View.VISIBLE);
                     break;

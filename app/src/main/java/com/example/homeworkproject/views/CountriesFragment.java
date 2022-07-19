@@ -51,7 +51,7 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
 
         binding = FragmentCountriesBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        initView(view);
+        initView();
 
         //set title on toolbar
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle(R.string.c_title);
@@ -61,25 +61,23 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         return view;
     }
 
-    private void initView(View view) {
+    private void initView() {
 
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         locationAdapter = new LocationAdapter(countryArrayList, getActivity(), this);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(locationAdapter);
-
-        getAllCountries();
-    }
-
-    public void getAllCountries() {
-        viewModel.getLiveCountryData();
-
         binding.retryButton.setOnClickListener(view -> {
             binding.retryButton.setVisibility(View.GONE);
             binding.errorText.setVisibility(View.GONE);
             viewModel.getLiveCountryData();
         });
+        getAllCountries();
+    }
+
+    public void getAllCountries() {
+        viewModel.getLiveCountryData();
 
         viewModel.countryData.observe(requireActivity(), country -> {
             binding.progressBar.setVisibility(View.GONE);
@@ -103,8 +101,8 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
 
 
     @Override
-    public void onItemClick(Country countryDataArrayList) {
-        String value = String.valueOf(countryDataArrayList.getCountryId());
+    public void onItemClick(Country selected) {
+        String value = String.valueOf(selected.getCountryId());
 
         Fragment fragment = ProvincesFragment.newInstance(value);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

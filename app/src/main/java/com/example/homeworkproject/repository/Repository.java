@@ -31,14 +31,14 @@ public class Repository {
             public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
 
                 if (response.isSuccessful() && response.body() !=null){
-                    //TODO: fix this
+
                     ArrayList<Country> country = response.body();
                     countryLiveData.setValue(ApiState.success(country));
                 } }
 
             @Override
             public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
-                //TODO: fix this
+
                 countryLiveData.setValue(ApiState.error(t.getMessage(), t.getMessage()));
             }
         });
