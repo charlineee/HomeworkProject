@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,22 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/white"
 tools:context=".views.CountriesFragment">
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="countriesFragment"
+            type="com.example.homeworkproject.views.CountriesFragment" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/countries_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".views.CountriesFragment">
 
 <ProgressBar
         android:id="@+id/progressBar"
@@ -30,7 +47,8 @@ tools:context=".views.CountriesFragment">
         android:text="@string/retry"
         android:id="@+id/retryButton"
         android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:onClick="@{() -> countriesFragment.getAllCountries()}"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -38,3 +56,4 @@ tools:context=".views.CountriesFragment">
         android:layout_height="match_parent"/>
 
 </RelativeLayout>
+    </layout>

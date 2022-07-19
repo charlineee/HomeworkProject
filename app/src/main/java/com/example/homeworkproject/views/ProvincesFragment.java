@@ -67,7 +67,6 @@ public class ProvincesFragment extends Fragment {
     }
 
 
-
     private void initView() {
 
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
@@ -77,16 +76,15 @@ public class ProvincesFragment extends Fragment {
         binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
 
-        binding.retryButton.setOnClickListener(view -> {
-            binding.retryButton.setVisibility(View.GONE);
-            binding.provinceText.setVisibility(View.GONE);
-            viewModel.getLiveProvinceData(mParam1);
-        });
+        getAllProvinces(mParam1);
+    }
 
+    public void handler(){
         getAllProvinces(mParam1);
     }
 
     public void getAllProvinces(String value) {
+        binding.retryButton.setVisibility(View.GONE);
 
         if (viewModel.currentVal == null || !viewModel.currentVal.equals(value)){
             viewModel.getLiveProvinceData(value);
@@ -100,7 +98,9 @@ public class ProvincesFragment extends Fragment {
                     binding.progressBar.setVisibility(View.GONE);
                     provinceAdapter.addList(provinces.data);
                     provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());
+
                     if (provinces.data.size() < 1) {
+                        binding.provinceText.setVisibility(View.VISIBLE);
                         binding.provinceText.setText(R.string.provinceNone);
                     }
                     break;
