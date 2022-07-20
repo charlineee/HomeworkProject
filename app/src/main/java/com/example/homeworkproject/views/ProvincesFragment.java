@@ -24,7 +24,7 @@ public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private LocationViewModel viewModel;
     private ProvinceAdapter provinceAdapter;
-    private String mParam1;
+    private String countryId;
     private FragmentProvincesBinding binding;
     ArrayList<Province> provinceArrayList;
 
@@ -46,7 +46,7 @@ public class ProvincesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            countryId = getArguments().getString(ARG_PARAM1);
         }
 
     }
@@ -76,18 +76,15 @@ public class ProvincesFragment extends Fragment {
         binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
 
-        getAllProvinces(mParam1);
+        getAllProvinces();
     }
 
-    public void handler(){
-        getAllProvinces(mParam1);
-    }
 
-    public void getAllProvinces(String value) {
+    public void getAllProvinces() {
         binding.retryButton.setVisibility(View.GONE);
 
-        if (viewModel.currentVal == null || !viewModel.currentVal.equals(value)){
-            viewModel.getLiveProvinceData(value);
+        if (viewModel.currentVal == null || !viewModel.currentVal.equals(countryId)){
+            viewModel.getLiveProvinceData(countryId);
         }
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {

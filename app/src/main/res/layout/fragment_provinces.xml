@@ -37,7 +37,7 @@
         android:id="@+id/retryButton"
         android:visibility="gone"
         android:layout_centerInParent="true"
-        android:onClick="@{() -> provinceFragment.handler()}"/>
+        android:onClick="@{() -> provinceFragment.getAllProvinces()}"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
