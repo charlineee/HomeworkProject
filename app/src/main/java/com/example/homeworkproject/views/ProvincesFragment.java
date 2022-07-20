@@ -24,7 +24,7 @@ public class ProvincesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private LocationViewModel viewModel;
     private ProvinceAdapter provinceAdapter;
-    private String mParam1;
+    private String countryId;
     private FragmentProvincesBinding binding;
     ArrayList<Province> provinceArrayList;
 
@@ -46,7 +46,7 @@ public class ProvincesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            countryId = getArguments().getString(ARG_PARAM1);
         }
 
     }
@@ -67,7 +67,6 @@ public class ProvincesFragment extends Fragment {
     }
 
 
-
     private void initView() {
 
         viewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
@@ -77,19 +76,15 @@ public class ProvincesFragment extends Fragment {
         binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
 
-        binding.retryButton.setOnClickListener(view -> {
-            binding.retryButton.setVisibility(View.GONE);
-            binding.provinceText.setVisibility(View.GONE);
-            viewModel.getLiveProvinceData(mParam1);
-        });
-
-        getAllProvinces(mParam1);
+        getAllProvinces();
     }
 
-    public void getAllProvinces(String value) {
 
-        if (viewModel.currentVal == null || !viewModel.currentVal.equals(value)){
-            viewModel.getLiveProvinceData(value);
+    public void getAllProvinces() {
+        binding.retryButton.setVisibility(View.GONE);
+
+        if (viewModel.currentVal == null || !viewModel.currentVal.equals(countryId)){
+            viewModel.getLiveProvinceData(countryId);
         }
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
@@ -100,7 +95,9 @@ public class ProvincesFragment extends Fragment {
                     binding.progressBar.setVisibility(View.GONE);
                     provinceAdapter.addList(provinces.data);
                     provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());
+
                     if (provinces.data.size() < 1) {
+                        binding.provinceText.setVisibility(View.VISIBLE);
                         binding.provinceText.setText(R.string.provinceNone);
                     }
                     break;

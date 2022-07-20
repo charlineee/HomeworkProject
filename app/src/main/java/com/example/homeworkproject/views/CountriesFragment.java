@@ -68,19 +68,20 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         locationAdapter = new LocationAdapter(countryArrayList, getActivity(), this);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(locationAdapter);
-        binding.retryButton.setOnClickListener(view -> {
-            binding.retryButton.setVisibility(View.GONE);
-            binding.errorText.setVisibility(View.GONE);
-            viewModel.getLiveCountryData();
-        });
+
         getAllCountries();
     }
+
+
 
     public void getAllCountries() {
         viewModel.getLiveCountryData();
 
         viewModel.countryData.observe(requireActivity(), country -> {
             binding.progressBar.setVisibility(View.GONE);
+            binding.errorText.setVisibility(View.GONE);
+            binding.retryButton.setVisibility(View.GONE);
+
             switch(country.status){
                 case SUCCESS:
                     locationAdapter.addList(country.data);
