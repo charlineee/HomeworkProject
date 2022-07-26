@@ -48,7 +48,6 @@ public class ProvincesFragment extends Fragment {
         if (getArguments() != null) {
             countryId = getArguments().getString(ARG_PARAM1);
         }
-
     }
 
     @Override
@@ -88,32 +87,16 @@ public class ProvincesFragment extends Fragment {
         }
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
+        provinceAdapter.addList(provinces);
+        provinceAdapter.notifyItemRangeChanged(0, (provinces).size());
 
-            switch(provinces.status){
-
-                case SUCCESS:
-                    binding.progressBar.setVisibility(View.GONE);
-                    provinceAdapter.addList(provinces.data);
-                    provinceAdapter.notifyItemRangeChanged(0, (provinces.data).size());
-
-                    if (provinces.data.size() < 1) {
-                        binding.provinceText.setVisibility(View.VISIBLE);
-                        binding.provinceText.setText(R.string.provinceNone);
-                    }
-                    break;
-                case LOADING:
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    break;
-                case ERROR:
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.provinceText.setText(R.string.error);
-                    binding.retryButton.setVisibility(View.VISIBLE);
-                    break;
-            }
+        if (provinces.size() < 1) {
+            binding.provinceText.setVisibility(View.VISIBLE);
+            binding.provinceText.setText(R.string.provinceNone);
+        }
 
         });
 
     }
-
 
 }

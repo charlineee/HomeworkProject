@@ -1,8 +1,6 @@
 package com.example.homeworkproject.viewmodels;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
+import static com.example.homeworkproject.model.ApiState.Status.LOADING;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,20 +9,20 @@ import com.example.homeworkproject.model.ApiState;
 import com.example.homeworkproject.model.Country;
 import com.example.homeworkproject.model.Province;
 import com.example.homeworkproject.repository.Repository;
-import com.example.homeworkproject.views.CountriesFragment;
 
 import java.util.ArrayList;
 
 public class LocationViewModel extends ViewModel {
 
     private final Repository repository;
-
-    public MutableLiveData<ApiState<ArrayList<Province>>> provinceData;
-    public MutableLiveData<ApiState<ArrayList<Country>>> countryData;
+    public ApiState.Status currentState;
+    public MutableLiveData<ArrayList<Province>> provinceData;
+    public MutableLiveData<ArrayList<Country>> countryData;
     public String currentVal;
 
     public LocationViewModel(){
         this.repository = new Repository();
+        currentState = LOADING;
     }
 
     public void getLiveCountryData() {
@@ -39,5 +37,12 @@ public class LocationViewModel extends ViewModel {
 
     }
 
+    public Boolean isLoading(){
+        return currentState == ApiState.Status.LOADING;
+    }
+
+    public Boolean isError(){
+        return currentState == ApiState.Status.ERROR;
+    }
 
 }

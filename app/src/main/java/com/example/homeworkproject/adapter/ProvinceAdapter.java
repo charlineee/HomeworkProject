@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.homeworkproject.databinding.CountryLayoutBinding;
 import com.example.homeworkproject.databinding.ProvinceLayoutBinding;
 import com.example.homeworkproject.model.Province;
 
@@ -21,7 +20,6 @@ public class ProvinceAdapter extends RecyclerView.Adapter<ProvinceAdapter.ViewHo
 
 
     public ProvinceAdapter() {
-        this.provinceDataArrayList = provinceDataArrayList;
 
     }
 

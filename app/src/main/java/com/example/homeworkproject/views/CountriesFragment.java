@@ -78,24 +78,8 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         viewModel.getLiveCountryData();
 
         viewModel.countryData.observe(requireActivity(), country -> {
-            binding.progressBar.setVisibility(View.GONE);
-            binding.errorText.setVisibility(View.GONE);
-            binding.retryButton.setVisibility(View.GONE);
-
-            switch(country.status){
-                case SUCCESS:
-                    locationAdapter.addList(country.data);
-                    locationAdapter.notifyItemRangeChanged(0, (country.data).size());
-                    break;
-                case LOADING:
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    break;
-                case ERROR:
-                    binding.errorText.setVisibility(View.VISIBLE);
-                    binding.retryButton.setVisibility(View.VISIBLE);
-                    break;
-            }
-
+            locationAdapter.addList(country);
+            locationAdapter.notifyItemRangeChanged(0, (country.size()));
         });
 
     }
