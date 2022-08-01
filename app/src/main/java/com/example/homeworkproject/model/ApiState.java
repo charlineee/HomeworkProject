@@ -1,8 +1,6 @@
 package com.example.homeworkproject.model;
 
-import androidx.annotation.Nullable;
-
-public class ApiState<T> {
+public class ApiState<T>  {
 
     public static Status status;
 
@@ -21,11 +19,14 @@ public class ApiState<T> {
     public static <T> ApiState<T> loading(){
         return new ApiState<>(Status.LOADING);
     }
+    public static <T> ApiState<T> blank(){
+        return new ApiState<>(Status.BLANK);
+    }
 
     public enum Status {
-        SUCCESS, ERROR, LOADING;
-
+        SUCCESS, ERROR, LOADING, BLANK
 
     }
+
 
 }

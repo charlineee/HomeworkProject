@@ -34,7 +34,7 @@ public class Repository {
 
             @Override
             public void onFailure(@NonNull Call<ArrayList<Country>> call, @NonNull Throwable t) {
-                ApiState.error();
+                countryLiveData.setValue(null);
             }
         });
 
@@ -55,7 +55,7 @@ public class Repository {
 
             @Override
             public void onFailure(@NonNull Call<ArrayList<Province>> call, @NonNull Throwable t) {
-                ApiState.error();
+                provinceLiveData.setValue(null);
             }
         });
         return provinceLiveData;

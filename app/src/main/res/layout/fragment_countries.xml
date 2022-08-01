@@ -5,6 +5,7 @@
     
     <data>
         <import type="android.view.View"/>
+        <import type="com.example.homeworkproject.model.ApiState.Status"/>
         <variable
             name="countriesFragment"
             type="com.example.homeworkproject.views.CountriesFragment" />
@@ -25,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="@{viewModel.isLoading() == true ? View.VISIBLE : View.GONE}"/>
+        android:visibility="@{viewModel.currentState == Status.LOADING ? View.VISIBLE : View.GONE}"/>
 
     <TextView
         android:id="@+id/errorText"
@@ -35,7 +36,7 @@
         android:padding="5dp"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:visibility="@{viewModel.isError()== true ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
         android:text="@string/error"
         android:textStyle="bold"/>
 
@@ -44,7 +45,7 @@
         android:layout_height="wrap_content"
         android:text="@string/retry"
         android:id="@+id/retryButton"
-        android:visibility="@{viewModel.isError() == true ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
         android:layout_centerInParent="true"
         android:onClick="@{() -> countriesFragment.getAllCountries()}"/>
 

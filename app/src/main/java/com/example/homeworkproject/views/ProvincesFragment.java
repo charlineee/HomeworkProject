@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.ProvinceAdapter;
 import com.example.homeworkproject.databinding.FragmentProvincesBinding;
+import com.example.homeworkproject.model.ApiState;
 import com.example.homeworkproject.model.Province;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
@@ -74,27 +75,28 @@ public class ProvincesFragment extends Fragment {
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(provinceAdapter);
         provinceArrayList = new ArrayList<>();
-
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setProvinceFragment(this);
         getAllProvinces();
     }
 
 
     public void getAllProvinces() {
-        binding.retryButton.setVisibility(View.GONE);
-
         if (viewModel.currentVal == null || !viewModel.currentVal.equals(countryId)){
             viewModel.getLiveProvinceData(countryId);
         }
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
-        provinceAdapter.addList(provinces);
-        provinceAdapter.notifyItemRangeChanged(0, (provinces).size());
-
-        if (provinces.size() < 1) {
-            binding.provinceText.setVisibility(View.VISIBLE);
-            binding.provinceText.setText(R.string.provinceNone);
-        }
-
+            if(provinces == null){
+                viewModel.currentState.setValue(ApiState.Status.ERROR);
+            } else if (provinces.size() < 1){
+                viewModel.currentState.setValue(ApiState.Status.BLANK);
+            } else{
+                viewModel.currentState.setValue(ApiState.Status.SUCCESS);
+                provinceAdapter.addList(provinces);
+                provinceAdapter.notifyItemRangeChanged(0, (provinces.size()));
+            }
         });
 
     }

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.LocationAdapter;
 import com.example.homeworkproject.databinding.FragmentCountriesBinding;
+import com.example.homeworkproject.model.ApiState;
 import com.example.homeworkproject.model.Country;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
@@ -68,7 +69,9 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         locationAdapter = new LocationAdapter(countryArrayList, getActivity(), this);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(locationAdapter);
-
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setCountriesFragment(this);
         getAllCountries();
     }
 
@@ -78,8 +81,13 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         viewModel.getLiveCountryData();
 
         viewModel.countryData.observe(requireActivity(), country -> {
-            locationAdapter.addList(country);
-            locationAdapter.notifyItemRangeChanged(0, (country.size()));
+            if(country == null){
+                viewModel.currentState.setValue(ApiState.Status.ERROR);
+            } else {
+                viewModel.currentState.setValue(ApiState.Status.SUCCESS);
+                locationAdapter.addList(country);
+                locationAdapter.notifyItemRangeChanged(0, (country.size()));
+            }
         });
 
     }
