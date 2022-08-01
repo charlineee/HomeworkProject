@@ -1,5 +1,6 @@
 package com.example.homeworkproject.viewmodels;
 
+import static com.example.homeworkproject.model.ApiState.Status.ERROR;
 import static com.example.homeworkproject.model.ApiState.Status.LOADING;
 import static com.example.homeworkproject.model.ApiState.Status.SUCCESS;
 
@@ -36,10 +37,12 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void getLiveProvinceData(String value){
-        currentVal = value;
-        currentState.setValue(LOADING);
-        provinceData = repository.getProvince(value);
+        if (!value.equals(currentVal) || provinceData.getValue() == null) {
+            currentVal = value;
+            currentState.setValue(LOADING);
+            provinceData = repository.getProvince(value);
 
+            }
     }
 
 }

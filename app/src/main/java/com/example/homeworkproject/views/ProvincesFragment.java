@@ -83,9 +83,7 @@ public class ProvincesFragment extends Fragment {
 
 
     public void getAllProvinces() {
-        if (viewModel.currentVal == null || !viewModel.currentVal.equals(countryId)){
-            viewModel.getLiveProvinceData(countryId);
-        }
+        viewModel.getLiveProvinceData(countryId);
 
         viewModel.provinceData.observe(requireActivity(), provinces -> {
             if(provinces == null){
