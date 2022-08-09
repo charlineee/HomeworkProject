@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.homeworkproject.R;
 import com.example.homeworkproject.adapter.LocationAdapter;
 import com.example.homeworkproject.databinding.FragmentCountriesBinding;
+import com.example.homeworkproject.model.ApiState;
 import com.example.homeworkproject.model.Country;
 import com.example.homeworkproject.viewmodels.LocationViewModel;
 
@@ -68,7 +69,9 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         locationAdapter = new LocationAdapter(countryArrayList, getActivity(), this);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(locationAdapter);
-
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setCountriesFragment(this);
         getAllCountries();
     }
 
@@ -78,24 +81,13 @@ public class CountriesFragment extends Fragment implements LocationAdapter.ItemC
         viewModel.getLiveCountryData();
 
         viewModel.countryData.observe(requireActivity(), country -> {
-            binding.progressBar.setVisibility(View.GONE);
-            binding.errorText.setVisibility(View.GONE);
-            binding.retryButton.setVisibility(View.GONE);
-
-            switch(country.status){
-                case SUCCESS:
-                    locationAdapter.addList(country.data);
-                    locationAdapter.notifyItemRangeChanged(0, (country.data).size());
-                    break;
-                case LOADING:
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    break;
-                case ERROR:
-                    binding.errorText.setVisibility(View.VISIBLE);
-                    binding.retryButton.setVisibility(View.VISIBLE);
-                    break;
+            if(country == null){
+                viewModel.currentState.setValue(ApiState.Status.ERROR);
+            } else {
+                viewModel.currentState.setValue(ApiState.Status.SUCCESS);
+                locationAdapter.addList(country);
+                locationAdapter.notifyItemRangeChanged(0, (country.size()));
             }
-
         });
 
     }

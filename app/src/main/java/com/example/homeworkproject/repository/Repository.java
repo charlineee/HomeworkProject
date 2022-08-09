@@ -1,9 +1,6 @@
 package com.example.homeworkproject.repository;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.homeworkproject.client.Api;
@@ -21,47 +18,44 @@ import retrofit2.Response;
 public class Repository {
     Api apiRequest = RetrofitClient.getMyApi();
 
-    public MutableLiveData<ApiState<ArrayList<Country>>> getCountries(){
-        final MutableLiveData<ApiState<ArrayList<Country>>> countryLiveData = new MutableLiveData<>();
+    public MutableLiveData<ArrayList<Country>> getCountries(){
+        final MutableLiveData<ArrayList<Country>> countryLiveData = new MutableLiveData<>();
 
         Call<ArrayList<Country>> call = apiRequest.getCountry();
 
         call.enqueue(new Callback<ArrayList<Country>>() {
             @Override
-            public void onResponse(Call<ArrayList<Country>> call, Response<ArrayList<Country>> response) {
+            public void onResponse(@NonNull Call<ArrayList<Country>> call, @NonNull Response<ArrayList<Country>> response) {
 
                 if (response.isSuccessful() && response.body() !=null){
 
-                    ArrayList<Country> country = response.body();
-                    countryLiveData.setValue(ApiState.success(country));
+                    countryLiveData.setValue(response.body());
                 } }
 
             @Override
-            public void onFailure(Call<ArrayList<Country>> call, Throwable t) {
-
-                countryLiveData.setValue(ApiState.error(t.getMessage(), t.getMessage()));
+            public void onFailure(@NonNull Call<ArrayList<Country>> call, @NonNull Throwable t) {
+                countryLiveData.setValue(null);
             }
         });
 
         return countryLiveData;
     }
 
-    public MutableLiveData<ApiState<ArrayList<Province>>> getProvince(String value) {
+    public MutableLiveData<ArrayList<Province>> getProvince(String value) {
 
-        final MutableLiveData<ApiState<ArrayList<Province>>> provinceLiveData = new MutableLiveData<>();
+        final MutableLiveData<ArrayList<Province>> provinceLiveData = new MutableLiveData<>();
         Call<ArrayList<Province>> call = apiRequest.getProvince(value);
         call.enqueue(new Callback<ArrayList<Province>>() {
             @Override
-            public void onResponse(Call<ArrayList<Province>> call, Response<ArrayList<Province>> response) {
+            public void onResponse(@NonNull Call<ArrayList<Province>> call, @NonNull Response<ArrayList<Province>> response) {
                 if (response.isSuccessful()){
-                    ArrayList<Province> province = response.body();
-                    provinceLiveData.setValue(ApiState.success(province));
+                    provinceLiveData.setValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Province>> call, Throwable t) {
-                provinceLiveData.setValue(ApiState.error(t.getMessage(), t.getMessage()));
+            public void onFailure(@NonNull Call<ArrayList<Province>> call, @NonNull Throwable t) {
+                provinceLiveData.setValue(null);
             }
         });
         return provinceLiveData;

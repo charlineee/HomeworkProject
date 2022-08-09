@@ -4,9 +4,14 @@
     android:id="@+id/provinces_view">
 
     <data>
+        <import type="android.view.View"/>
+        <import type="com.example.homeworkproject.model.ApiState.Status"/>
         <variable
             name="provinceFragment"
             type="com.example.homeworkproject.views.ProvincesFragment" />
+        <variable
+            name="viewModel"
+            type="com.example.homeworkproject.viewmodels.LocationViewModel" />
     </data>
 
     <RelativeLayout android:layout_width="match_parent"
@@ -18,7 +23,8 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:visibility="@{viewModel.currentState == Status.LOADING ? View.VISIBLE : View.GONE}"/>
 
     <TextView
         android:id="@+id/provinceText"
@@ -28,15 +34,29 @@
         android:padding="5dp"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:text="@string/provinceNone"
+        android:visibility="@{viewModel.currentState == Status.BLANK ? View.VISIBLE : View.GONE}"
         android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
+            android:text="@string/error"
+            android:textStyle="bold"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/retry"
         android:id="@+id/retryButton"
-        android:visibility="gone"
         android:layout_centerInParent="true"
+        android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
         android:onClick="@{() -> provinceFragment.getAllProvinces()}"/>
 
     <androidx.recyclerview.widget.RecyclerView
