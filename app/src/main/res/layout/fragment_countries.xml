@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/countries_view"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/white"
-tools:context=".views.CountriesFragment">
--->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
+
     <data>
+        <import type="android.view.View"/>
+        <import type="com.example.homeworkproject.model.ApiState.Status"/>
         <variable
             name="countriesFragment"
             type="com.example.homeworkproject.views.CountriesFragment" />
+        <variable
+            name="viewModel"
+            type="com.example.homeworkproject.viewmodels.LocationViewModel" />
     </data>
 
     <RelativeLayout
@@ -25,35 +21,38 @@ tools:context=".views.CountriesFragment">
         android:background="@color/white"
         tools:context=".views.CountriesFragment">
 
-<ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-    <TextView
-        android:id="@+id/errorText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        android:visibility="gone"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:text="@string/error"
-        android:textStyle="bold"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/retry"
-        android:id="@+id/retryButton"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:onClick="@{() -> countriesFragment.getAllCountries()}"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.currentState == Status.LOADING ? View.VISIBLE : View.GONE}"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
+            android:text="@string/error"
+            android:textStyle="bold"/>
 
-</RelativeLayout>
-    </layout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:id="@+id/retryButton"
+            android:visibility="@{viewModel.currentState == Status.ERROR ? View.VISIBLE : View.GONE}"
+            android:layout_centerInParent="true"
+            android:onClick="@{() -> countriesFragment.getAllCountries()}"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+</layout>
